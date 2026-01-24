@@ -1,1 +1,6 @@
 __pycache__/
+*.sh
+*test_htmlnode.py
+*test_textnode.py
+
+
