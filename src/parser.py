@@ -36,19 +36,26 @@ def parsing_ol(block):
 def parsing_quotes(block):
     clean_lines = []
     for quotes in block.split("\n"):
-        clean_lines.append(quotes[1:].strip())
+        if len(quotes) > 1:
+            clean_lines.append(quotes[1:].strip())
+        else:
+            continue
     return " ".join(clean_lines)
     
 def parsing_paragraphs(block):
     clean_lines = []
-    lines = ""
+    
     for paragraph in block.split("\n\n"):
+        lines = ""
         chars = paragraph.split()
         for char in chars:
             if char != "\n":
                 lines += f' {char}'
             else:
                 continue
-        clean_lines.append(lines.strip())
+        clear_lines = lines.strip()
+        if clear_lines == "" or clean_lines == None:
+            continue
+        clean_lines.append(clear_lines)
     
     return clean_lines

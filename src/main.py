@@ -4,7 +4,7 @@ from splitter import *
 from htmlnode import *
 import os.path as path, os
 import shutil
-from generator import generate_page
+from generator import generate_page_recursive
 
 def copy(initial, destination):
     if not path.exists(destination):
@@ -32,7 +32,7 @@ def main():
         copy(src, dst)
     else:
         raise FileNotFoundError(f"{src} must exist and be a directory")
-    status = generate_page("content/index.md", "template.html", "public/index.html")
+    generate_page_recursive("content", "template.html", "public")
 
 if __name__ == "__main__":
     main()

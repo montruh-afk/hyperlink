@@ -23,8 +23,13 @@ def markdown_to_html_node(markdown):
         match block_type:
             case BlockType.PARAGRAPH:
                 html_children = paragraph_to_node(block)
+                children = []
+                for child in html_children:
+                    if child is None or child == "":
+                        continue
+                    children.append(child)
 
-                block_nodes.append(ParentNode("p", html_children))
+                block_nodes.append(ParentNode("p", children))
             case BlockType.CODE:
                 parent = code_to_node(block)
                 block_nodes.append(ParentNode("pre", [parent]))  # Wrap in <pre>

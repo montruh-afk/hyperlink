@@ -8,7 +8,17 @@ def ol_to_node(block):
     items = parsing_ol(block) 
 
     for item_text in items:
-        inline_html_children = [text_node_to_html_node(tn) for tn in text_to_textnodes(item_text)]
+        if item_text is None or item_text.strip() == "":
+            continue
+
+        inline_html_children = []
+        for tn in text_to_textnodes(item_text):
+            child = text_node_to_html_node(tn)
+            if child is None:
+                continue
+            inline_html_children.append(child)
+
+    # now use inline_html_children to build the <li> node
 
                     
         li_node = ParentNode("li", inline_html_children)
@@ -24,9 +34,18 @@ def ul_to_node(block):
     list_item_nodes = [] # This list will hold all the <li> HTMLNodes
     items = parsing_ul(block) # Get your clean item strings
 
-    for item_text in items: # For each clean item string:
-        # 1. Convert the item's text into a list of HTMLNode children for the <li>
-        inline_html_children = [text_node_to_html_node(tn) for tn in text_to_textnodes(item_text)]
+    for item_text in items:
+        if item_text is None or item_text.strip() == "":
+            continue
+
+        inline_html_children = []
+        for tn in text_to_textnodes(item_text):
+            child = text_node_to_html_node(tn)
+            if child is None:
+                continue
+            inline_html_children.append(child)
+
+    # now use inline_html_children to build the <li> node
 
         # 2. Create an <li> ParentNode using these children
         li_node = ParentNode("li", inline_html_children)
@@ -50,14 +69,28 @@ def heading_to_node(block):
     if hashes > 6 or hashes < 1:
         raise ValueError(f"invalid markdown header format: Text contains {hashes} hashes")
     block = block[hashes:]
+    
     text_nodes = text_to_textnodes(block.strip())
-    html_children = [text_node_to_html_node(nodes) for nodes in text_nodes]
-    return html_children, hash_dict[f"{hashes}"]
+    html_children = []
+    for tn in text_nodes:
+        html_child = text_node_to_html_node(tn)
+        if html_child is None:
+            continue
+        html_children.append(html_child)
+
+    return html_children, hash_dict[str(hashes)]
 
 def quote_to_node(block):
     quote = parsing_quotes(block)
+    if not quote:
+        return None
+    html_children = []
     text_node = text_to_textnodes(quote)
-    html_children = [text_node_to_html_node(nodes) for nodes in text_node]
+    for tn in text_node:
+        html_child = text_node_to_html_node(tn)
+        if html_child is None:
+            continue
+        html_children.append(html_child)
     return html_children
 
 def code_to_node(block):
@@ -71,8 +104,13 @@ def paragraph_to_node(block):
     html_children = []
     clean_block = parsing_paragraphs(block)
     for blocks in clean_block:
+        if blocks is None or blocks.strip() == "":
+            continue
         text_node = text_to_textnodes(blocks)
         for nodes in text_node:
+            html_child = text_node_to_html_node(nodes)
+            if html_child is None:
+                continue
             html_children.append(text_node_to_html_node(nodes))
     return html_children
 

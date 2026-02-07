@@ -10,7 +10,7 @@ class BlockType(Enum):
     
     
 def block_to_block_type(markdown_block):
-    lines = markdown_block.split("\n")
+    lines = markdown_block.strip().split("\n")
     
     if markdown_block.startswith(("# ", "## ", "### ", "#### ", "##### ", "###### ")):
             return BlockType.HEADING
@@ -34,6 +34,8 @@ def block_to_block_type(markdown_block):
                 return BlockType.PARAGRAPH
             i += 1
         return BlockType.ORDERED_LIST
+    
+    
     return BlockType.PARAGRAPH
 
     

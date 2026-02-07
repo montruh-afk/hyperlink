@@ -31,6 +31,9 @@ class TextNode:
     
     
 def text_node_to_html_node(text_node):
+    if text_node.text is None or text_node.text == "":
+        return None
+        
     match(text_node.text_type):
         case TextType.TEXT:
             return LeafNode(tag=None, value=text_node.text)
