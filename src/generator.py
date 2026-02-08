@@ -5,7 +5,7 @@ from extract import extract_title
 
 
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f'Generating page from {from_path} to {dest_path} using {template_path}')
     
     from_path = path.abspath(from_path)
@@ -35,23 +35,25 @@ def generate_page(from_path, template_path, dest_path):
     title = extract_title(file_content)
     
     html = template.replace("{{ Title }}", title)
-    html = html.replace("{{ Content }}", content_html)       
+    html = html.replace("{{ Content }}", content_html)   
+    html = html.replace('href="/',f'href="{basepath}') 
+    html = html.replace('src="/', f'src="{basepath}')
             
     with open(dest_path, "w") as f:
         length = f.write(html)
         
-def generate_page_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_page_recursive(dir_path_content, template_path, dest_dir_path, basepath="/"):
     entry = os.listdir(dir_path_content)
     for i in entry:
         if path.isfile(path.join(dir_path_content, i)):
             if i.endswith(".md"):
-                generate_page(path.join(dir_path_content, i), template_path, path.join(dest_dir_path, i.replace(".md", ".html")))
+                generate_page(path.join(dir_path_content, i), template_path, path.join(dest_dir_path, i.replace(".md", ".html")), basepath)
             else:
                 continue
         elif path.isdir(path.join(dir_path_content, i)):
             new_dest_dir_path = path.join(dest_dir_path, i)
             if not path.exists(new_dest_dir_path):
                 os.mkdir(new_dest_dir_path)
-            generate_page_recursive(path.join(dir_path_content, i), template_path, new_dest_dir_path)
+            generate_page_recursive(path.join(dir_path_content, i), template_path, new_dest_dir_path, basepath)
     
         
